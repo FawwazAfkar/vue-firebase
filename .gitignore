@@ -16,7 +16,9 @@ $RECYCLE.BIN/
 *.log
 log.txt
 npm-debug.log*
+src/utils/firebase.ts
 
+# OS or Editor folders
 /.idea
 /.ionic
 /.sass-cache
