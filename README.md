@@ -11,12 +11,12 @@ import { initializeApp } from "firebase/app";
 import { getAuth, GoogleAuthProvider } from 'firebase/auth';
 
 const firebaseConfig = {
-    apiKey: "AIzaSyBxMlI-DFNS06MiuiBDLm-fzYIE2LsAaEc",
-    authDomain: "vue-firebase-7db7e.firebaseapp.com",
-    projectId: "vue-firebase-7db7e",
-    storageBucket: "vue-firebase-7db7e.firebasestorage.app",
-    messagingSenderId: "556382459801",
-    appId: "1:556382459801:web:805be3ea80875758722508"
+    apiKey: "API_KEY",
+    authDomain: "AUTH_DOMAIN",
+    projectId: "PROJECT_ID",
+    storageBucket: "STORAGE_BUCKET",
+    messagingSenderId: "MESSAGING_SENDER_ID",
+    appId: "APP_ID"
 };
 
 const firebase = initializeApp(firebaseConfig);
