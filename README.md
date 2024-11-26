@@ -370,3 +370,33 @@ Komponen `HomePage.vue` menampilkan daftar Todo dan menangani operasi CRUD:
 - `handleStatus` menangani perubahan status Todo.
 
 *** asset lengkap screenshot ada di folder img
+
+### Penjelasan Logic CRUD
+
+1. Create (Menambahkan Todo)
+- InputModal.vue: Pengguna memasukkan data Todo melalui modal input.
+- handleSubmit di HomePage.vue: Fungsi ini dipanggil saat pengguna menekan tombol submit pada modal. Fungsi ini memanggil addTodo dari firestoreService.
+- firestoreService.addTodo di firestore.ts: Fungsi ini menambahkan Todo baru ke Firestore dengan menggunakan addDoc.
+
+2. Read (Membaca Todo)
+- loadTodos di HomePage.vue: Fungsi ini dipanggil saat halaman dimuat dan saat pengguna melakukan refresh Fungsi ini memanggil getTodos dari firestoreService.
+- firestoreService.getTodos di firestore.ts: Fungsi ini mengambil semua Todo dari Firestore dengan menggunakan getDocs dan mengurutkannya berdasarkan updatedAt.
+
+3. Update (Mengedit Todo)
+- handleEdit di HomePage.vue: Fungsi ini dipanggil saat pengguna menekan tombol edit pada Todo. Fungsi ini membuka modal input dengan data Todo yang akan diedit.
+- handleSubmit di HomePage.vue: Fungsi ini juga menangani pengeditan Todo. Jika editingId tidak null, fungsi ini memanggil updateTodo dari firestoreService.
+- firestoreService.updateTodo di firestore.ts: Fungsi ini memperbarui Todo di Firestore dengan menggunakan updateDoc.
+
+4. Delete (Menghapus Todo)
+- handleDelete di HomePage.vue: Fungsi ini dipanggil saat pengguna menekan tombol delete pada Todo. Fungsi ini memanggil deleteTodo dari firestoreService.
+- firestoreService.deleteTodo di firestore.ts: Fungsi ini menghapus Todo dari Firestore dengan menggunakan deleteDoc.
+
+5. Update Status (Mengubah Status Todo)
+- handleStatus di HomePage.vue: Fungsi ini dipanggil saat pengguna menekan tombol untuk mengubah status Todo. Fungsi ini memanggil updateStatus dari firestoreService.
+- firestoreService.updateStatus di firestore.ts: Fungsi ini memperbarui status Todo di Firestore dengan menggunakan updateDoc.
+
+### Flow CRUD
+- Pengguna menambahkan/mengedit Todo: Data Todo dikirim ke Firestore melalui firestoreService.
+- Pengguna membaca Todo: Data Todo diambil dari Firestore dan ditampilkan di aplikasi.
+- Pengguna menghapus Todo: Todo dihapus dari Firestore melalui firestoreService.
+- Pengguna mengubah status Todo: Status Todo diperbarui di Firestore melalui firestoreService.
