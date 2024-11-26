@@ -1,6 +1,13 @@
-# Autentikasi Login dengan Google di Aplikasi Ionic Vue
+# Penjelasan Autentikasi Login dengan Google dan CRUD 
 
-## Langkah-langkah
+- Nama : Fawwaz Afkar Muzakky
+- NIM : H1D022067
+- Shift(KRS/Baru) : B/C
+
+
+## Langkah-langkah Autentikasi Login
+
+`(Untuk penjelasan CRUD bisa scroll sampai Bawah)`
 
 ### 1. Konfigurasi Firebase
 Pertama, konfigurasi Firebase, Buat file `firebase.ts` di folder `src/utils` dan tambahkan konfigurasi Firebase:
@@ -238,3 +245,128 @@ Berikut adalah screenshot dari aplikasi yang telah selesai:
 ![Screenshot](./screenshots/login.png)
 ![ss home](./screenshots/home.png)
 ![ss profile](./screenshots/profile.png)
+
+## Penjelasan Proses CRUD ke Firebase
+
+Aplikasi ini menggunakan Firebase Firestore sebagai backend untuk menyimpan data Todo. 
+
+1. Struktur Data Todo
+
+Data Todo memiliki struktur sebagai berikut:
+```typescript
+export interface Todo {
+    id?: string;
+    title: string;
+    description: string;
+    status: boolean;
+    createdAt: Timestamp;
+    updatedAt: Timestamp;
+}
+```
+
+2. Mengambil Referensi Koleksi Todo
+
+Setiap operasi CRUD dimulai dengan mendapatkan referensi ke koleksi Todo di Firestore:
+```typescript
+    getTodoRef() {
+    const uid = auth.currentUser?.uid;
+    if (!uid) throw new Error('User not authenticated');
+    return collection(db, 'users', uid, 'todos');
+}
+```
+
+Referensi ini digunakan untuk mengakses dokumen Todo milik pengguna yang sedang login.
+
+3. Operasi Create
+
+![add](./img/addtodo.png)
+
+Untuk menambahkan Todo baru, aplikasi memanggil addTodo:
+```typescript
+async addTodo(todo: Omit<Todo, 'id'>) {
+    const todoRef = this.getTodoRef();
+    const docRef = await addDoc(todoRef, {
+        ...todo,
+        status: false,
+        createdAt: Timestamp.now(),
+        updatedAt: Timestamp.now()
+    });
+    return docRef.id;
+}
+```
+
+Data Todo dikirim ke Firestore dengan menambahkan dokumen baru ke koleksi.
+
+4. Operasi Read
+
+![Screenshot](./img/hometodo.png)
+
+Untuk membaca semua Todo, aplikasi memanggil getTodos:
+```typescript
+async getTodos(): Promise<Todo[]> {
+    const todoRef = this.getTodoRef();
+    const q = query(todoRef, orderBy('updatedAt', 'desc'));
+    const snapshot = await getDocs(q);
+    return snapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data()
+    } as Todo));
+}
+```
+
+Data Todo diambil dari Firestore dan diurutkan berdasarkan updatedAt.
+
+5. Operasi Update
+
+![Screenshot](./img/edittodo.png)
+
+Untuk memperbarui Todo, aplikasi memanggil updateTodo:
+```typescript
+async updateTodo(id: string, todo: Partial<Todo>) {
+    const todoRef = this.getTodoRef();
+    const docRef = doc(todoRef, id);
+    await updateDoc(docRef, {
+        ...todo,
+        updatedAt: Timestamp.now()
+    });
+}
+```
+
+Dokumen Todo yang ada diperbarui dengan data baru.
+
+6. Operasi Delete
+
+before
+![Screenshot](./img/deletetodo.png)
+
+after
+![Screenshot](./img/afterdelete.png)
+
+Untuk menghapus Todo, aplikasi memanggil deleteTodo:
+```typescript
+async deleteTodo(id: string) {
+    const todoRef = this.getTodoRef();
+    const docRef = doc(todoRef, id);
+    await deleteDoc(docRef);
+}
+```
+
+Dokumen Todo dihapus dari koleksi.
+
+7. Integrasi dengan Komponen Vue
+
+Komponen InputModal.vue digunakan untuk menambah atau mengedit Todo. Data yang diinput oleh pengguna dikirim ke Firestore melalui event submit:
+```typescript
+const input = () => {
+    emit('submit', localTodo.value);
+    cancel();
+}
+```
+Komponen `HomePage.vue` menampilkan daftar Todo dan menangani operasi CRUD:
+
+- `loadTodos` memuat data Todo dari Firestore.
+- `handleSubmit` menangani penambahan atau pengeditan Todo.
+- `handleDelete` menangani penghapusan Todo.
+- `handleStatus` menangani perubahan status Todo.
+
+*** asset lengkap screenshot ada di folder img
